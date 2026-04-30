@@ -1,17 +1,13 @@
-'''to create a route/url : we need the path import'''
-from django.urls import path 
-'''django auths view : to give access to configured
-authenication operations in django'''
-'''import the custom views functionalities'''
+from django.urls import path
 from . import views
-## give a label for the routes : 'accounts:login'
+
 app_name = 'media_assets'
-## register the urls paths by mapping to appropriate
-## view method 
+
 urlpatterns = [
-    # '' : root path : 8000/
-    path('', views.dashboard_view, 
-    name='dashboard'),
-    
-    
+    path('', views.dashboard_view, name='dashboard'),
+    path('my_media/', views.my_media_view, name="my_media"),
+    path('upload/', views.upload_view, name='upload_media'),
+    path('media/<int:pk>', views.media_detail_view, name='media_detail'),
+    path('media/<int:pk>/edit/', views.edit_media_view, name='edit_media'),
+    path('media/<int:pk>/delete/', views.delete_media_view, name='delete_media'),
 ]

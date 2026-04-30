@@ -16,7 +16,7 @@ from .forms import MediaAssetForm
 def dashboard_view(request):
     '''main dashboard: show all public media assets '''
     # capture all assets from media assets db table that are public
-    media_list = MediaAssets.object.filter(is_public=True)
+    media_list = MediaAssets.objects.filter(is_public=True)
     # get data from a form using the name attribute 
     # this power a search functionality for my users to be able to 
     # filter the media assets 
@@ -41,7 +41,8 @@ def dashboard_view(request):
 @login_required
 def my_media_view(request):
     '''user own media assets'''
-    media_list = MediaAssets.object.filter(uploaded_by=request.user)
+    media_list = MediaAssets.objects.all().order_by('-id').filter(uploaded_by=request.user)
+     # content pagination(showcase data to user in batches (12) )
     # pagination
     paginator = Paginator(media_list,12)
     page_number = request.GET.get('page')
@@ -55,12 +56,13 @@ def my_media_view(request):
 def upload_view(request):
     if request.method == "POST":
         form = MediaAssetForm(request.POST, request.FILES)
-        if form.valid():
+        if form.is_valid():
             media = form.save(commit=False) # delayed post 
             media.uploaded_by = request.user # tagging user to post
             media.save()
             messages.success(request,'Media Uploaded Successfully!')
-            return redirect('media_assets::my_media')
+            #return redirect('media_assets::my_media')
+            return redirect('media_assets:;dashboard')
     else:
         form = MediaAssetForm()
     return render(request,'media_assets/upload_media.html',{
@@ -79,7 +81,7 @@ def media_detail_view(request,pk):
     # i.e if object exists tag it if not showcases a 404 page.
     media = get_object_or_404(MediaAssets,pk=pk)
     # app specifications # tag on whether media is private or not
-    if not media.is_public and media.uploaded_by != request.user and not request.user.is_teacher() and not request.user.is_superuser:
+    if not media.is_public and media.uploaded_by != request.user and not request.user.is_teacher() and not request.is_superuser:
         messages.error(request,"This media is private!!")
         return redirect('media_assets:dashboard')
     ## if user is a teacher,superuser or the media is public
@@ -109,7 +111,7 @@ def edit_media_view(request,pk):
     if request.method == 'POST':
         form = MediaAssetForm(request.POST,request.FILES,
         instance=media)
-        if form.valid():
+        if form.is_valid():
             form.save()
             messages.success(request,"Media Asset Updated!")
             return redirect("media_assets:media_detail",pk=pk)
@@ -127,11 +129,11 @@ def delete_media_view(request,pk):
     if not media.can_delete(request.user):
         messages.error(request,"You cannot delete media")
         return redirect('media_assets:dashboard')
-    if request.method == 'PPOST':
+    if request.method == 'POST':
         media.delete() # delete from db 
         messages.success(request,"Deleted Successfully")
         return redirect('media_assets:my_media')
 
-    return render(request,'media_assets:delete_media.html',{
+    return render(request,'media_assets/delete_media.html',{
         'media':media
     })

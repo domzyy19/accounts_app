@@ -1,9 +1,7 @@
-<!-- global templating file : it will avail stylesheet links to other .html interfaces -->
- <!--this is via the block jinja templating tags  -->
- <!-- global html config file : JINJA TEMPLATING -->
-<DOCTYPE html>
-    <html lang="en"></html>
-    <head>
+<!-- global html config file : JINJA TEMPLATING -->
+ <!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}MediaHub{% endblock %}</title>
@@ -51,7 +49,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <!-- inside the if block we showcase the content only if the user is logged in (user.is_authenticated) -->
                     {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'media_assets:dashboard' %}">
@@ -59,19 +56,18 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="{% url 'media_assets:my_media' %}">
                                 <i class="fas fa-folder"></i> My Media
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="{% url 'media_assets:upload_media' %}">
                                 <i class="fas fa-upload"></i> Upload
                             </a>
                         </li>
                     {% endif %}
                 </ul>
                 <ul class="navbar-nav">
-                    <!-- the user object carries multiple info based of our app i.e accounts user model -->
                     {% if user.is_authenticated %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
@@ -102,12 +98,11 @@
             </div>
         </div>
     </nav>
-<!-- messages is a django object that offers notifications in a django app : alerts on post / get process -->
+
     <div class="content">
         <div class="container mt-4">
             {% if messages %}
                 {% for message in messages %}
-                <!-- message.tag showcases level of message i.e is it an error or a sucessful process -->
                     <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                         {{ message }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -115,7 +110,6 @@
                 {% endfor %}
             {% endif %}
 <!-- HTML rendering as I move page to page -->
- <!-- block content will replace content shown according app acessed -->
             {% block content %} {% endblock %}  
         </div>
     </div>
@@ -130,4 +124,3 @@
     {% block extra_js %}{% endblock %}
 </body>
 </html>
-</DOCTYPE>  
