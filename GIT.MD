@@ -13,4 +13,13 @@ c. Get your repo url on creation
 6. push using token via this command
 git push origin master
 where master is referencing the default branch where work will be saved.
-
+-gh auth logout
+-gh auth login 
+- require your personla project
+### to get an a new device
+- select project saving location - open terminal here
+- git clone linktorepo 
+### to update project repo
+- git add . 
+- git commit -m "commit message here"\
+- git push -u origin master/main
